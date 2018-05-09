@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/report/greenpeace/monthly</path>
+    <page_callback>CRM_Customreports_Form_MonthlyReport</page_callback>
+    <title>MonthlyReport</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+</menu>
