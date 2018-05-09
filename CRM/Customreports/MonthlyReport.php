@@ -33,6 +33,16 @@ class CRM_Customreports_MonthlyReport {
   protected $endDate;
 
   /**
+   * @var
+   */
+  protected $report;
+
+  /**
+   *
+   */
+  const GREENPEACE_ORGANISATION_CONTACT_ID = 1;
+
+  /**
    * CRM_Customreports_MonthlyReport constructor.
    *
    * @param int | NULL $start_timestamp
@@ -75,8 +85,20 @@ class CRM_Customreports_MonthlyReport {
   /**
    * TODO.
    */
+  public function generateReport() {
+    $associates = static::getAssociates();
+  }
+
+  /**
+   * TODO.
+   */
   public static function getAssociates() {
-    // TODO: Contacts from group, tag, relationship?
+    $result = civicrm_api3('Contact', 'get', array(
+      'return' => array('id'),
+      'employer_id' => self::GREENPEACE_ORGANISATION_CONTACT_ID,
+      'is_deleted' => 0,
+    ));
+    return array_keys($result['values']);
   }
 
   /**

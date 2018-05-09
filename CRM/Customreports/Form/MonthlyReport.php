@@ -41,6 +41,7 @@ class CRM_Customreports_Form_MonthlyReport extends CRM_Core_Form {
     $values = $this->exportValues();
 
     $export = new CRM_Customreports_MonthlyReport();
+    $export->generateReport();
 
     parent::postProcess();
   }
