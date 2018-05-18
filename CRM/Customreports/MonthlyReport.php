@@ -23,7 +23,8 @@ use CRM_Customreports_ExtensionUtil as E;
 class CRM_Customreports_MonthlyReport {
 
   /**
-   * @var array
+   * @var array $_custom_fields_interests
+   *   Custom fields to include in the report (IS NOT NULL).
    */
   protected static $_custom_fields_interests = array(
     1 => 'politik_1',
@@ -33,7 +34,8 @@ class CRM_Customreports_MonthlyReport {
   );
 
   /**
-   * @var array
+   * @var array $_custom_field_values_engagement
+   *   Field values of custom field "Engagement" wo onclude in the report.
    */
   protected static $_custom_field_values_engagement = array(
     1,
@@ -41,13 +43,18 @@ class CRM_Customreports_MonthlyReport {
   );
 
   /**
-   * @var array
+   * @var array $_custom_field_values_relevance
+   *   Field values of custom field "Relevance" wo onclude in the report.
    */
   protected static $_custom_field_values_relevance = array(
     1,
     2,
   );
 
+  /**
+   * @var array $_activity_type_ids
+   *   Activity types to include in the report.
+   */
   protected static $_activity_type_ids = array(
     1,
     55,
@@ -55,42 +62,46 @@ class CRM_Customreports_MonthlyReport {
   );
 
   /**
-   * @var \DateTime
+   * @var \DateTime $startDate
+   *   Start date of range to generate the report for.
    */
   protected $startDate;
 
   /**
-   * @var \DateTime
+   * @var \DateTime $endDate
+   *   End date of range to generate the report for.
    */
   protected $endDate;
 
   /**
-   * @var array
+   * @var array $report
+   *   Array matrix of the report.
    */
   protected $report = array();
 
   /**
-   * @var array
+   * @var array $reportColumns
+   *   Column names for the report.
    */
   protected $reportColumns = array();
 
   /**
-   * TODO.
+   * Contact ID of the Greenpeace organization that associates have as employer.
    */
   const GREENPEACE_ORGANISATION_CONTACT_ID = 1;
 
   /**
-   * TODO.
+   * Custom field ID "Campaign" on activities.
    */
   const CUSTOM_FIELD_CAMPAIGNS_ACTIVITIES = 21;
 
   /**
-   * TODO.
+   * Relationship ID of type "Primary contacts".
    */
   const RELATIONSHIP_TYPE_ID_PRIMARY_CONTACTS = 12;
 
   /**
-   * TODO.
+   * Relationship ID of type "Secondary contacts".
    */
   const RELATIONSHIP_TYPE_ID_SECONDARY_CONTACTS = 13;
 
@@ -135,7 +146,7 @@ class CRM_Customreports_MonthlyReport {
   }
 
   /**
-   * TODO.
+   * Retrieves report data and sets $this->report and $this->reportColumns.
    *
    * @throws \Exception
    */
@@ -1128,7 +1139,7 @@ class CRM_Customreports_MonthlyReport {
   }
 
   /**
-   * TODO.
+   * Retrieves a list of Greenpeace associates.
    *
    * @throws \Exception
    */
@@ -1143,7 +1154,8 @@ class CRM_Customreports_MonthlyReport {
   }
 
   /**
-   * TODO.
+   * Retrieves a list of campaigns available for activities (custom field
+   * values).
    *
    * @return array
    *
@@ -1164,7 +1176,7 @@ class CRM_Customreports_MonthlyReport {
   }
 
   /**
-   * TODO.
+   * Generates a CSV file and disposes it for download.
    *
    * @param string $filename
    * @param string $delimiter
