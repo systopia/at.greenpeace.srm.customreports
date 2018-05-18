@@ -25,7 +25,34 @@ class CRM_Customreports_MonthlyReport {
   /**
    * @var array
    */
-  protected static $_custom_fields_individuals = array(1, 2, 3, 4);
+  protected static $_custom_fields_interests = array(
+    1 => 'politik_1',
+    2 => 'wirtschaft_2',
+    3 => 'gesellschaft_3',
+    4 => 'medien_4',
+  );
+
+  /**
+   * @var array
+   */
+  protected static $_custom_field_values_engagement = array(
+    1,
+    2,
+  );
+
+  /**
+   * @var array
+   */
+  protected static $_custom_field_values_relevance = array(
+    1,
+    2,
+  );
+
+  protected static $_activity_type_ids = array(
+    1,
+    55,
+    2,
+  );
 
   /**
    * @var \DateTime
@@ -40,7 +67,12 @@ class CRM_Customreports_MonthlyReport {
   /**
    * @var array
    */
-  protected $report;
+  protected $report = array();
+
+  /**
+   * @var array
+   */
+  protected $reportColumns = array();
 
   /**
    * TODO.
@@ -51,6 +83,16 @@ class CRM_Customreports_MonthlyReport {
    * TODO.
    */
   const CUSTOM_FIELD_CAMPAIGNS_ACTIVITIES = 21;
+
+  /**
+   * TODO.
+   */
+  const RELATIONSHIP_TYPE_ID_PRIMARY_CONTACTS = 12;
+
+  /**
+   * TODO.
+   */
+  const RELATIONSHIP_TYPE_ID_SECONDARY_CONTACTS = 13;
 
   /**
    * CRM_Customreports_MonthlyReport constructor.
@@ -98,9 +140,9 @@ class CRM_Customreports_MonthlyReport {
    * @throws \Exception
    */
   public function generateReport() {
-    /**
-     * Report columns.
-     */
+    /***************************************************************************
+     * Report columns.                                                         *
+     **************************************************************************/
     $report_columns = array(
       '',
       'Greenpeace',
@@ -118,17 +160,19 @@ class CRM_Customreports_MonthlyReport {
       $report_columns[] = $campaign['label'];
     }
 
-    /**
-     * Report rows.
-     */
+    /***************************************************************************
+     * Report rows.                                                            *
+     **************************************************************************/
     $report = array(
       array('Monatsbericht'),
       array('') + $report_columns,
     );
 
-    // Row 1:
-    // Stakeholder total: Number of distinct contacts with activities with GP
-    // associates involved.
+    /**
+     * Row 1: Stakeholder total: Distinct number of contacts with activities
+     * with GP associates involved.
+     * -------------------------------------------------------------------------
+     */
     $stakeholder_record = array(
       'Stakeholder total',
     );
@@ -157,8 +201,8 @@ class CRM_Customreports_MonthlyReport {
                  AND ac_gp.contact_id IN (" . implode(',', array_keys($associates)) . ")
       	         AND ac_gp.record_type_id = 3
            )
-           AND a.activity_date_time >= '" . date("Y-m-d H:i:s", $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date("Y-m-d H:i:s", $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
     $stakeholder_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
 
     // Stakeholder total per associate.
@@ -187,8 +231,8 @@ class CRM_Customreports_MonthlyReport {
                  AND ac_gp.contact_id = {$associate['id']}
       	         AND ac_gp.record_type_id = 3
            )
-           AND a.activity_date_time >= '" . date("Y-m-d H:i:s", $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date("Y-m-d H:i:s", $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
       $stakeholder_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
     }
 
@@ -208,15 +252,18 @@ class CRM_Customreports_MonthlyReport {
          WHERE
            ac_sh.record_type_id = 3
            AND avc.campaigns_21 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $campaign['value'] . CRM_Core_DAO::VALUE_SEPARATOR . "%'
-           AND a.activity_date_time >= '" . date("Y-m-d H:i:s", $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date("Y-m-d H:i:s", $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+      $stakeholder_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
     }
-    $stakeholder_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
 
     $report[] = $stakeholder_record;
 
-    // Row 2:
-    // Organizations
+    /**
+     * Row 2: Organizations: Distinct number of Organizations with activities
+     * with GP associates involved.
+     * -------------------------------------------------------------------------
+     */
     $organizations_record = array(
       'Organizations',
     );
@@ -247,8 +294,8 @@ class CRM_Customreports_MonthlyReport {
                  AND ac_gp.contact_id IN (" . implode(',', array_keys($associates)) . ")
       	         AND ac_gp.record_type_id = 3
            )
-           AND a.activity_date_time >= '" . date("Y-m-d H:i:s", $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date("Y-m-d H:i:s", $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
     $organizations_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
 
     // Organizations per associate.
@@ -278,8 +325,8 @@ class CRM_Customreports_MonthlyReport {
                  AND ac_gp.contact_id = {$associate['id']}
       	         AND ac_gp.record_type_id = 3
            )
-           AND a.activity_date_time >= '" . date("Y-m-d H:i:s", $this->startDate->getTimestamp()) ."'
-           AND a.activity_date_time < '" . date("Y-m-d H:i:s", $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) ."'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
       $organizations_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
     }
 
@@ -303,15 +350,18 @@ class CRM_Customreports_MonthlyReport {
            ac_sh.record_type_id = 3
            AND c_sh.contact_type = 'Organization'
            AND avc.campaigns_21 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $campaign['value'] . CRM_Core_DAO::VALUE_SEPARATOR . "%'
-           AND a.activity_date_time >= '" . date("Y-m-d H:i:s", $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date("Y-m-d H:i:s", $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+      $organizations_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
     }
-    $organizations_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
 
     $report[] = $organizations_record;
 
-    // Row 3:
-    // Individuals
+    /**
+     * Row 3: Individuals: Distinct number of Individuals with activities with
+     * GP associates involved.
+     * -------------------------------------------------------------------------
+     */
     $individuals_record = array(
       'Individuals',
     );
@@ -342,11 +392,11 @@ class CRM_Customreports_MonthlyReport {
                  AND ac_gp.contact_id IN (" . implode(',', array_keys($associates)) . ")
       	         AND ac_gp.record_type_id = 3
            )
-           AND a.activity_date_time >= '" . date("Y-m-d H:i:s", $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date("Y-m-d H:i:s", $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
     $individuals_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
 
-    // Organizations per associate.
+    // Individuals per associate.
     foreach ($associates as $associate) {
       $query =
         "SELECT
@@ -373,12 +423,12 @@ class CRM_Customreports_MonthlyReport {
                  AND ac_gp.contact_id = {$associate['id']}
       	         AND ac_gp.record_type_id = 3
            )
-           AND a.activity_date_time >= '" . date("Y-m-d H:i:s", $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date("Y-m-d H:i:s", $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
       $individuals_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
     }
 
-    // Organizations per campaign.
+    // Individuals per campaign.
     foreach ($campaigns as $campaign) {
       $query =
         "SELECT
@@ -398,44 +448,682 @@ class CRM_Customreports_MonthlyReport {
            ac_sh.record_type_id = 3
            AND c_sh.contact_type = 'Individual'
            AND avc.campaigns_21 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $campaign['value'] . CRM_Core_DAO::VALUE_SEPARATOR . "%'
-           AND a.activity_date_time >= '" . date("Y-m-d H:i:s", $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date("Y-m-d H:i:s", $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+      $individuals_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
     }
-    $individuals_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
 
     $report[] = $individuals_record;
 
-    // TODO: Row 4: Primary contacts
+    /**
+     * Row 4: Primary contacts: Distinct number of contacts with relationship of
+     * type "Primary contact" with GP associate.
+     * -------------------------------------------------------------------------
+     */
+    $primary_contacts_record = array(
+      'Primary contacts',
+    );
+    // Primary contacts all associates.
+    $query =
+      "SELECT
+         COUNT( DISTINCT r.contact_id_a)
+         FROM
+           civicrm_relationship r
+         WHERE
+           r.is_active = 1
+           AND r.relationship_type_id = " . self::RELATIONSHIP_TYPE_ID_PRIMARY_CONTACTS . "
+           AND r.contact_id_b IN (" . implode(',', array_keys($associates)) . ")
+           AND (
+               r.start_date >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+               OR r.start_date IS NULL
+           )
+           AND (
+               r.end_date < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+               OR r.end_date IS NULL
+           )";
+    $primary_contacts_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
 
-    // TODO: Row 5: Secondary contacts
+    // Primary contacts per associate.
+    foreach ($associates as $associate) {
+      $query =
+        "SELECT
+         COUNT( DISTINCT r.contact_id_a)
+         FROM
+           civicrm_relationship r
+         WHERE
+           r.is_active = 1
+           AND r.relationship_type_id = " . self::RELATIONSHIP_TYPE_ID_PRIMARY_CONTACTS . "
+           AND r.contact_id_b = {$associate['id']}
+           AND (
+               r.start_date >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+               OR r.start_date IS NULL
+           )
+           AND (
+               r.end_date < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+               OR r.end_date IS NULL
+           )";
+      $primary_contacts_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
+    }
 
-    // TODO: Rows 6 to 13: A row for each relevant custom field
-    foreach (self::$_custom_fields_individuals as $custom_field_id) {
+    $report[] = $primary_contacts_record;
+
+    /**
+     * Row 5: Secondary contacts: Distinct number of contacts with relationship
+     * of type "Secondary contact" with GP associate.
+     * -------------------------------------------------------------------------
+     */
+    $secondary_contacts_record = array(
+      'Secondary contacts',
+    );
+
+    // Secondary contacts all associates.
+    $query =
+      "SELECT
+         COUNT( DISTINCT r.contact_id_a)
+         FROM
+           civicrm_relationship r
+         WHERE
+           r.is_active = 1
+           AND r.relationship_type_id = " . self::RELATIONSHIP_TYPE_ID_SECONDARY_CONTACTS . "
+           AND r.contact_id_b IN (" . implode(',', array_keys($associates)) . ")
+           AND (
+               r.start_date >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+               OR r.start_date IS NULL
+           )
+           AND (
+               r.end_date < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+               OR r.end_date IS NULL
+           )";
+    $secondary_contacts_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
+
+    // Secondary contacts per associate.
+    foreach ($associates as $associate) {
+      $query =
+        "SELECT
+         COUNT( DISTINCT r.contact_id_a)
+         FROM
+           civicrm_relationship r
+         WHERE
+           r.is_active = 1
+           AND r.relationship_type_id = " . self::RELATIONSHIP_TYPE_ID_SECONDARY_CONTACTS . "
+           AND r.contact_id_b = {$associate['id']}
+           AND (
+               r.start_date >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+               OR r.start_date IS NULL
+           )
+           AND (
+               r.end_date < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+               OR r.end_date IS NULL
+           )";
+      $secondary_contacts_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
+    }
+
+    $report[] = $secondary_contacts_record;
+
+    /**
+     * Rows 6 to 9: Contacts with interests: Distinct number of contacts with at
+     * least one interest in each custom field with activities with GP
+     * associates involved.
+     * -------------------------------------------------------------------------
+     */
+    foreach (self::$_custom_fields_interests as $custom_field_id => $custom_field_name) {
       $custom_field_definition = civicrm_api3('CustomField', 'getsingle', array(
         'return' => array('label'),
         'id' => $custom_field_id,
       ));
       $custom_field_record = array(
         $custom_field_definition['label'],
-        0, // Greenpeace total records
       );
 
+      // Contacts with interests per custom field all associates.
+      $query =
+        "SELECT
+           COUNT(DISTINCT ac_sh.contact_id)
+         FROM
+           civicrm_activity_contact ac_sh
+         LEFT JOIN
+           civicrm_activity a
+           ON a.id = ac_sh.activity_id
+         LEFT JOIN
+           civicrm_contact c_sh
+           ON c_sh.id = ac_sh.contact_id
+         LEFT JOIN
+           civicrm_value_zusatzinformationen_1 z
+           ON z.entity_id = c_sh.id
+         WHERE
+           ac_sh.record_type_id = 3
+           AND (
+             c_sh.employer_id != 1
+             OR c_sh.employer_id IS NULL
+           )
+           AND z.{$custom_field_name} IS NOT NULL
+           AND EXISTS(
+               SELECT * FROM civicrm_activity_contact ac_gp
+               WHERE
+                 ac_gp.activity_id = ac_sh.activity_id
+                 AND ac_gp.contact_id IN (" . implode(',', array_keys($associates)) . ")
+      	         AND ac_gp.record_type_id = 3
+           )
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+      $custom_field_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
+
+      // Contacts with interests per custom field per associate.
       foreach ($associates as $associate) {
-        // TODO: Query number of contacts with value in field and linked with associate (via activity).
-        $custom_field_record[] = 0;
+        $query =
+          "SELECT
+           COUNT(DISTINCT ac_sh.contact_id)
+         FROM
+           civicrm_activity_contact ac_sh
+         LEFT JOIN
+           civicrm_activity a
+           ON a.id = ac_sh.activity_id
+         LEFT JOIN
+           civicrm_contact c_sh
+           ON c_sh.id = ac_sh.contact_id
+         LEFT JOIN
+           civicrm_value_zusatzinformationen_1 z
+           ON z.entity_id = c_sh.id
+         WHERE
+           ac_sh.record_type_id = 3
+           AND (
+             c_sh.employer_id != 1
+             OR c_sh.employer_id IS NULL
+           )
+           AND z.{$custom_field_name} IS NOT NULL
+           AND EXISTS(
+               SELECT * FROM civicrm_activity_contact ac_gp
+               WHERE
+                 ac_gp.activity_id = ac_sh.activity_id
+                 AND ac_gp.contact_id = {$associate['id']}
+      	         AND ac_gp.record_type_id = 3
+           )
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+        $custom_field_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
       }
 
+      // Contacts with interests per custom field per campaign.
       foreach ($campaigns as $campaign) {
-        // TODO: Query number of contacts with value in field and linked with campaign (via activity).
+        $query =
+          "SELECT
+           COUNT(DISTINCT ac_sh.contact_id) AS sh_id
+         FROM
+           civicrm_activity_contact ac_sh
+         LEFT JOIN
+           civicrm_activity a
+           ON a.id = ac_sh.activity_id
+         LEFT JOIN
+           civicrm_value_campaigns_7 avc
+           ON avc.entity_id = ac_sh.activity_id
+         LEFT JOIN
+           civicrm_value_zusatzinformationen_1 z
+           ON z.entity_id = ac_sh.contact_id
+         WHERE
+           ac_sh.record_type_id = 3
+           AND avc.campaigns_21 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $campaign['value'] . CRM_Core_DAO::VALUE_SEPARATOR . "%'
+           AND z.{$custom_field_name} IS NOT NULL
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+        $custom_field_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
       }
 
       $report[] = $custom_field_record;
     }
 
-    // TODO: Row 14: Activities total
+    /**
+     * Rows 10 to 11: Contacts with relevance values: Distinct number of
+     * contacts with specific value in relevance custom field with activities
+     * with GP associates involved.
+     * -------------------------------------------------------------------------
+     */
+    foreach (self::$_custom_field_values_relevance as $field_value) {
+      $custom_field_definition = civicrm_api3('CustomField', 'getsingle', array(
+        'return' => array('option_group_id'),
+        'id' => 6,
+      ));
+      $custom_field_value_definition = civicrm_api3('OptionValue', 'getsingle', array(
+        'return' => array('label'),
+        'option_group_id' => $custom_field_definition['option_group_id'],
+        'value' => $field_value,
+      ));
+      $custom_field_value_record = array(
+        $custom_field_value_definition['label'],
+      );
 
-    // TODO: Rows 15 to 17: A row for each relevant activity type.
+      // Contacts with relevance per custom field value all associates.
+      $query =
+        "SELECT
+           COUNT(DISTINCT ac_sh.contact_id)
+         FROM
+           civicrm_activity_contact ac_sh
+         LEFT JOIN
+           civicrm_activity a
+           ON a.id = ac_sh.activity_id
+         LEFT JOIN
+           civicrm_contact c_sh
+           ON c_sh.id = ac_sh.contact_id
+         LEFT JOIN
+           civicrm_value_zusatzinformationen_1 z
+           ON z.entity_id = c_sh.id
+         WHERE
+           ac_sh.record_type_id = 3
+           AND (
+             c_sh.employer_id != 1
+             OR c_sh.employer_id IS NULL
+           )
+           AND z.topinfluencer_6 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $field_value . CRM_Core_DAO::VALUE_SEPARATOR . "%'
+           AND EXISTS(
+               SELECT * FROM civicrm_activity_contact ac_gp
+               WHERE
+                 ac_gp.activity_id = ac_sh.activity_id
+                 AND ac_gp.contact_id IN (" . implode(',', array_keys($associates)) . ")
+      	         AND ac_gp.record_type_id = 3
+           )
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+      $custom_field_value_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
 
+      // Contacts with relevance per custom field value per associate.
+      foreach ($associates as $associate) {
+        $query =
+          "SELECT
+           COUNT(DISTINCT ac_sh.contact_id)
+         FROM
+           civicrm_activity_contact ac_sh
+         LEFT JOIN
+           civicrm_activity a
+           ON a.id = ac_sh.activity_id
+         LEFT JOIN
+           civicrm_contact c_sh
+           ON c_sh.id = ac_sh.contact_id
+         LEFT JOIN
+           civicrm_value_zusatzinformationen_1 z
+           ON z.entity_id = c_sh.id
+         WHERE
+           ac_sh.record_type_id = 3
+           AND (
+             c_sh.employer_id != 1
+             OR c_sh.employer_id IS NULL
+           )
+           AND z.topinfluencer_6 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $field_value . CRM_Core_DAO::VALUE_SEPARATOR . "%'
+           AND EXISTS(
+               SELECT * FROM civicrm_activity_contact ac_gp
+               WHERE
+                 ac_gp.activity_id = ac_sh.activity_id
+                 AND ac_gp.contact_id = {$associate['id']}
+      	         AND ac_gp.record_type_id = 3
+           )
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+        $custom_field_value_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
+      }
+
+      // Contacts with relevance per custom field value per campaign.
+      foreach ($campaigns as $campaign) {
+        $query =
+          "SELECT
+           COUNT(DISTINCT ac_sh.contact_id) AS sh_id
+         FROM
+           civicrm_activity_contact ac_sh
+         LEFT JOIN
+           civicrm_activity a
+           ON a.id = ac_sh.activity_id
+         LEFT JOIN
+           civicrm_value_campaigns_7 avc
+           ON avc.entity_id = ac_sh.activity_id
+         LEFT JOIN
+           civicrm_value_zusatzinformationen_1 z
+           ON z.entity_id = ac_sh.contact_id
+         WHERE
+           ac_sh.record_type_id = 3
+           AND avc.campaigns_21 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $campaign['value'] . CRM_Core_DAO::VALUE_SEPARATOR . "%'
+           AND z.topinfluencer_6 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $field_value . CRM_Core_DAO::VALUE_SEPARATOR . "%'
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+        $custom_field_value_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
+      }
+
+      $report[] = $custom_field_value_record;
+    }
+
+    /**
+     * Rows 12 to 13: Contacts with engagement values: Distinct number of
+     * contacts with specific value in engagement custom field with activities
+     * with GP associates involved.
+     * -------------------------------------------------------------------------
+     */
+    foreach (self::$_custom_field_values_engagement as $field_value) {
+      $custom_field_definition = civicrm_api3('CustomField', 'getsingle', array(
+        'return' => array('option_group_id'),
+        'id' => 5,
+      ));
+      $custom_field_value_definition = civicrm_api3('OptionValue', 'getsingle', array(
+        'return' => array('label'),
+        'option_group_id' => $custom_field_definition['option_group_id'],
+        'value' => $field_value,
+      ));
+      $custom_field_value_record = array(
+        $custom_field_value_definition['label'],
+      );
+
+      // Contacts with engagement per custom field value all associates.
+      $query =
+        "SELECT
+           COUNT(DISTINCT ac_sh.contact_id)
+         FROM
+           civicrm_activity_contact ac_sh
+         LEFT JOIN
+           civicrm_activity a
+           ON a.id = ac_sh.activity_id
+         LEFT JOIN
+           civicrm_contact c_sh
+           ON c_sh.id = ac_sh.contact_id
+         LEFT JOIN
+           civicrm_value_zusatzinformationen_1 z
+           ON z.entity_id = c_sh.id
+         WHERE
+           ac_sh.record_type_id = 3
+           AND (
+             c_sh.employer_id != 1
+             OR c_sh.employer_id IS NULL
+           )
+           AND z.engagement_5 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $field_value . CRM_Core_DAO::VALUE_SEPARATOR . "%'
+           AND EXISTS(
+               SELECT * FROM civicrm_activity_contact ac_gp
+               WHERE
+                 ac_gp.activity_id = ac_sh.activity_id
+                 AND ac_gp.contact_id IN (" . implode(',', array_keys($associates)) . ")
+      	         AND ac_gp.record_type_id = 3
+           )
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+      $custom_field_value_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
+
+      // Contacts with engagement per custom field value per associate.
+      foreach ($associates as $associate) {
+        $query =
+          "SELECT
+           COUNT(DISTINCT ac_sh.contact_id)
+         FROM
+           civicrm_activity_contact ac_sh
+         LEFT JOIN
+           civicrm_activity a
+           ON a.id = ac_sh.activity_id
+         LEFT JOIN
+           civicrm_contact c_sh
+           ON c_sh.id = ac_sh.contact_id
+         LEFT JOIN
+           civicrm_value_zusatzinformationen_1 z
+           ON z.entity_id = c_sh.id
+         WHERE
+           ac_sh.record_type_id = 3
+           AND (
+             c_sh.employer_id != 1
+             OR c_sh.employer_id IS NULL
+           )
+           AND z.engagement_5 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $field_value . CRM_Core_DAO::VALUE_SEPARATOR . "%'
+           AND EXISTS(
+               SELECT * FROM civicrm_activity_contact ac_gp
+               WHERE
+                 ac_gp.activity_id = ac_sh.activity_id
+                 AND ac_gp.contact_id = {$associate['id']}
+      	         AND ac_gp.record_type_id = 3
+           )
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+        $custom_field_value_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
+      }
+
+      // Contacts with engagement per custom field value per campaign.
+      foreach ($campaigns as $campaign) {
+        $query =
+          "SELECT
+           COUNT(DISTINCT ac_sh.contact_id) AS sh_id
+         FROM
+           civicrm_activity_contact ac_sh
+         LEFT JOIN
+           civicrm_activity a
+           ON a.id = ac_sh.activity_id
+         LEFT JOIN
+           civicrm_value_campaigns_7 avc
+           ON avc.entity_id = ac_sh.activity_id
+         LEFT JOIN
+           civicrm_value_zusatzinformationen_1 z
+           ON z.entity_id = ac_sh.contact_id
+         WHERE
+           ac_sh.record_type_id = 3
+           AND avc.campaigns_21 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $campaign['value'] . CRM_Core_DAO::VALUE_SEPARATOR . "%'
+           AND z.engagement_5 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $field_value . CRM_Core_DAO::VALUE_SEPARATOR . "%'
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+        $custom_field_value_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
+      }
+
+      $report[] = $custom_field_value_record;
+    }
+
+    /**
+     * Row 14: Activities total: Distinct number of activities with stakeholders
+     * and GP associates involved.
+     * -------------------------------------------------------------------------
+     */
+    $activities_total_record = array(
+      'Activities total',
+    );
+
+    // Activities with stakeholders and GP associates involved all associates.
+    $query =
+      "SELECT
+         COUNT(DISTINCT ac_sh.activity_id)
+       FROM
+         civicrm_activity_contact ac_sh
+       LEFT JOIN
+         civicrm_contact c_sh
+         ON c_sh.id = ac_sh.activity_id
+         LEFT JOIN
+           civicrm_activity a
+           ON a.id = ac_sh.activity_id
+       WHERE
+         ac_sh.record_type_id = 3
+         AND (
+           c_sh.employer_id != 1
+           OR c_sh.employer_id IS NULL
+         )
+         AND EXISTS(
+           SELECT * FROM civicrm_activity_contact ac_gp
+           WHERE
+             ac_gp.activity_id = ac_sh.activity_id
+             AND ac_gp.contact_id IN (" . implode(',', array_keys($associates)) . ")
+             AND ac_gp.record_type_id = 3
+         )
+         AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+         AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+    $activities_total_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
+
+    // Activities with stakeholders and GP associates involved per associate.
+    foreach ($associates as $associate) {
+      $query =
+        "SELECT
+           COUNT(DISTINCT ac_sh.activity_id)
+         FROM
+           civicrm_activity_contact ac_sh
+         LEFT JOIN
+           civicrm_contact c_sh
+           ON c_sh.id = ac_sh.activity_id
+         LEFT JOIN
+           civicrm_activity a
+           ON a.id = ac_sh.activity_id
+         WHERE
+           ac_sh.record_type_id = 3
+           AND (
+             c_sh.employer_id != 1
+             OR c_sh.employer_id IS NULL
+           )
+           AND EXISTS(
+             SELECT * FROM civicrm_activity_contact ac_gp
+             WHERE
+               ac_gp.activity_id = ac_sh.activity_id
+               AND ac_gp.contact_id = {$associate['id']}
+               AND ac_gp.record_type_id = 3
+           )
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+      $activities_total_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
+    }
+
+    // Activities with stakeholders and GP associates involved per campaign.
+    foreach ($campaigns as $campaign) {
+      $query =
+        "SELECT
+           COUNT(DISTINCT ac_sh.activity_id)
+         FROM
+           civicrm_activity_contact ac_sh
+         LEFT JOIN
+           civicrm_contact c_sh
+           ON c_sh.id = ac_sh.activity_id
+         LEFT JOIN
+           civicrm_value_campaigns_7 avc
+           ON avc.entity_id = ac_sh.activity_id
+         LEFT JOIN
+           civicrm_activity a
+           ON a.id = ac_sh.activity_id
+         WHERE
+           ac_sh.record_type_id = 3
+           AND (
+             c_sh.employer_id != 1
+             OR c_sh.employer_id IS NULL
+           )
+           AND EXISTS(
+             SELECT * FROM civicrm_activity_contact ac_gp
+             WHERE
+               ac_gp.activity_id = ac_sh.activity_id
+               AND ac_gp.contact_id IN (" . implode(',', array_keys($associates)) . ")
+               AND ac_gp.record_type_id = 3
+           )
+           AND avc.campaigns_21 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $campaign['value'] . CRM_Core_DAO::VALUE_SEPARATOR . "%'
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+      $activities_total_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
+    }
+
+    $report[] = $activities_total_record;
+
+    /**
+     * Rows 15 to 17: Activities with activity types: Distinct number of
+     * activities with specific activity type with stakeholders and GP
+     * associates involved.
+     * -------------------------------------------------------------------------
+     */
+    foreach (self::$_activity_type_ids as $activity_type_id) {
+      $activity_type_definition = civicrm_api3('OptionValue', 'getsingle', array(
+        'return' => array('label'),
+        'option_group_id' => 'activity_type',
+        'value' => $activity_type_id,
+      ));
+      $activities_type_record = array(
+        $activity_type_definition['label'],
+      );
+
+      // Activities with stakeholders and GP associates involved all associates.
+      $query =
+        "SELECT
+         COUNT(DISTINCT ac_sh.activity_id)
+       FROM
+         civicrm_activity_contact ac_sh
+       LEFT JOIN
+         civicrm_contact c_sh
+         ON c_sh.id = ac_sh.activity_id
+         LEFT JOIN
+           civicrm_activity a
+           ON a.id = ac_sh.activity_id
+       WHERE
+         ac_sh.record_type_id = 3
+         AND (
+           c_sh.employer_id != 1
+           OR c_sh.employer_id IS NULL
+         )
+         AND EXISTS(
+           SELECT * FROM civicrm_activity_contact ac_gp
+           WHERE
+             ac_gp.activity_id = ac_sh.activity_id
+             AND ac_gp.contact_id IN (" . implode(',', array_keys($associates)) . ")
+             AND ac_gp.record_type_id = 3
+         )
+         AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+         AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+      $activities_type_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
+
+      // Activities with stakeholders and GP associates involved per associate.
+      foreach ($associates as $associate) {
+        $query =
+          "SELECT
+           COUNT(DISTINCT ac_sh.activity_id)
+         FROM
+           civicrm_activity_contact ac_sh
+         LEFT JOIN
+           civicrm_contact c_sh
+           ON c_sh.id = ac_sh.activity_id
+         LEFT JOIN
+           civicrm_activity a
+           ON a.id = ac_sh.activity_id
+         WHERE
+           ac_sh.record_type_id = 3
+           AND (
+             c_sh.employer_id != 1
+             OR c_sh.employer_id IS NULL
+           )
+           AND EXISTS(
+             SELECT * FROM civicrm_activity_contact ac_gp
+             WHERE
+               ac_gp.activity_id = ac_sh.activity_id
+               AND ac_gp.contact_id = {$associate['id']}
+               AND ac_gp.record_type_id = 3
+           )
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+        $activities_type_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
+      }
+
+      // Activities with stakeholders and GP associates involved per campaign.
+      foreach ($campaigns as $campaign) {
+        $query =
+          "SELECT
+           COUNT(DISTINCT ac_sh.activity_id)
+         FROM
+           civicrm_activity_contact ac_sh
+         LEFT JOIN
+           civicrm_contact c_sh
+           ON c_sh.id = ac_sh.activity_id
+         LEFT JOIN
+           civicrm_value_campaigns_7 avc
+           ON avc.entity_id = ac_sh.activity_id
+         LEFT JOIN
+           civicrm_activity a
+           ON a.id = ac_sh.activity_id
+         WHERE
+           ac_sh.record_type_id = 3
+           AND (
+             c_sh.employer_id != 1
+             OR c_sh.employer_id IS NULL
+           )
+           AND EXISTS(
+             SELECT * FROM civicrm_activity_contact ac_gp
+             WHERE
+               ac_gp.activity_id = ac_sh.activity_id
+               AND ac_gp.contact_id IN (" . implode(',', array_keys($associates)) . ")
+               AND ac_gp.record_type_id = 3
+           )
+           AND avc.campaigns_21 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $campaign['value'] . CRM_Core_DAO::VALUE_SEPARATOR . "%'
+           AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+        $activities_type_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
+      }
+
+      $report[] = $activities_type_record;
+    }
+
+    $this->reportColumns = $report_columns;
     $this->report = $report;
   }
 
@@ -457,26 +1145,6 @@ class CRM_Customreports_MonthlyReport {
   /**
    * TODO.
    *
-   * @param $contact_id
-   * @param $relationship_type
-   */
-  public static function getRelationships($contact_id, $relationship_type) {
-
-  }
-
-  /**
-   * TODO.
-   *
-   * @return array
-   */
-  public static function getActivities() {
-    // TODO: Activity type(s)?
-    return array();
-  }
-
-  /**
-   * TODO.
-   *
    * @return array
    *
    * @throws \Exception
@@ -493,6 +1161,28 @@ class CRM_Customreports_MonthlyReport {
       'option_group_id' => $option_group['option_group_id'],
     ));
     return $campaigns['values'];
+  }
+
+  /**
+   * TODO.
+   *
+   * @param string $filename
+   * @param string $delimiter
+   */
+  public function exportCSV($filename = 'export.csv', $delimiter=';') {
+    header('Content-Disposition: attachment;filename="'.$filename.'";');
+    header('Content-Encoding: UTF-8');
+    header('Content-type: text/csv; charset=UTF-8');
+    // Add UTF-8 BOM for Excel.
+    echo "\xEF\xBB\xBF";
+    $f = fopen('php://output', 'w');
+
+    foreach ($this->report as $line) {
+      // Fill incomplete records with empty string columns.
+      $line += array_fill(count($line), count($this->reportColumns) - count($line), '');
+      fputcsv($f, $line, $delimiter);
+    }
+    exit;
   }
 
 }

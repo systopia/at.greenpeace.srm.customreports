@@ -79,6 +79,8 @@ class CRM_Customreports_Form_MonthlyReport extends CRM_Core_Form {
       );
       $export->generateReport();
 
+      $export->exportCSV();
+
       parent::postProcess();
     }
     catch (Exception $exception) {
