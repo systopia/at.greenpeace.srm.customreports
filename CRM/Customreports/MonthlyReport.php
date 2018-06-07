@@ -210,10 +210,11 @@ class CRM_Customreports_MonthlyReport {
                WHERE
                  ac_gp.activity_id = ac_sh.activity_id
                  AND ac_gp.contact_id IN (" . implode(',', array_keys($associates)) . ")
-      	         AND ac_gp.record_type_id = 3
+      	         AND ac_gp.record_type_id IN(2,3)
            )
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
     $stakeholder_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
 
     // Stakeholder total per associate.
@@ -240,10 +241,11 @@ class CRM_Customreports_MonthlyReport {
                WHERE
                  ac_gp.activity_id = ac_sh.activity_id
                  AND ac_gp.contact_id = {$associate['id']}
-      	         AND ac_gp.record_type_id = 3
+      	         AND ac_gp.record_type_id IN(2,3)
            )
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
       $stakeholder_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
     }
 
@@ -264,7 +266,8 @@ class CRM_Customreports_MonthlyReport {
            ac_sh.record_type_id = 3
            AND avc.campaigns_21 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $campaign['value'] . CRM_Core_DAO::VALUE_SEPARATOR . "%'
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
       $stakeholder_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
     }
 
@@ -303,10 +306,11 @@ class CRM_Customreports_MonthlyReport {
                WHERE
                  ac_gp.activity_id = ac_sh.activity_id
                  AND ac_gp.contact_id IN (" . implode(',', array_keys($associates)) . ")
-      	         AND ac_gp.record_type_id = 3
+      	         AND ac_gp.record_type_id IN(2,3)
            )
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
     $organizations_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
 
     // Organizations per associate.
@@ -334,10 +338,11 @@ class CRM_Customreports_MonthlyReport {
                WHERE
                  ac_gp.activity_id = ac_sh.activity_id
                  AND ac_gp.contact_id = {$associate['id']}
-      	         AND ac_gp.record_type_id = 3
+      	         AND ac_gp.record_type_id IN(2,3)
            )
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) ."'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
       $organizations_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
     }
 
@@ -362,7 +367,8 @@ class CRM_Customreports_MonthlyReport {
            AND c_sh.contact_type = 'Organization'
            AND avc.campaigns_21 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $campaign['value'] . CRM_Core_DAO::VALUE_SEPARATOR . "%'
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
       $organizations_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
     }
 
@@ -401,10 +407,11 @@ class CRM_Customreports_MonthlyReport {
                WHERE
                  ac_gp.activity_id = ac_sh.activity_id
                  AND ac_gp.contact_id IN (" . implode(',', array_keys($associates)) . ")
-      	         AND ac_gp.record_type_id = 3
+      	         AND ac_gp.record_type_id IN(2,3)
            )
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
     $individuals_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
 
     // Individuals per associate.
@@ -432,10 +439,11 @@ class CRM_Customreports_MonthlyReport {
                WHERE
                  ac_gp.activity_id = ac_sh.activity_id
                  AND ac_gp.contact_id = {$associate['id']}
-      	         AND ac_gp.record_type_id = 3
+      	         AND ac_gp.record_type_id IN(2,3)
            )
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
       $individuals_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
     }
 
@@ -460,7 +468,8 @@ class CRM_Customreports_MonthlyReport {
            AND c_sh.contact_type = 'Individual'
            AND avc.campaigns_21 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $campaign['value'] . CRM_Core_DAO::VALUE_SEPARATOR . "%'
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
       $individuals_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
     }
 
@@ -613,10 +622,11 @@ class CRM_Customreports_MonthlyReport {
                WHERE
                  ac_gp.activity_id = ac_sh.activity_id
                  AND ac_gp.contact_id IN (" . implode(',', array_keys($associates)) . ")
-      	         AND ac_gp.record_type_id = 3
+      	         AND ac_gp.record_type_id IN(2,3)
            )
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
       $custom_field_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
 
       // Contacts with interests per custom field per associate.
@@ -647,10 +657,11 @@ class CRM_Customreports_MonthlyReport {
                WHERE
                  ac_gp.activity_id = ac_sh.activity_id
                  AND ac_gp.contact_id = {$associate['id']}
-      	         AND ac_gp.record_type_id = 3
+      	         AND ac_gp.record_type_id IN(2,3)
            )
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
         $custom_field_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
       }
 
@@ -675,7 +686,8 @@ class CRM_Customreports_MonthlyReport {
            AND avc.campaigns_21 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $campaign['value'] . CRM_Core_DAO::VALUE_SEPARATOR . "%'
            AND z.{$custom_field_name} IS NOT NULL
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
         $custom_field_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
       }
 
@@ -729,10 +741,11 @@ class CRM_Customreports_MonthlyReport {
                WHERE
                  ac_gp.activity_id = ac_sh.activity_id
                  AND ac_gp.contact_id IN (" . implode(',', array_keys($associates)) . ")
-      	         AND ac_gp.record_type_id = 3
+      	         AND ac_gp.record_type_id IN(2,3)
            )
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
       $custom_field_value_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
 
       // Contacts with relevance per custom field value per associate.
@@ -763,10 +776,11 @@ class CRM_Customreports_MonthlyReport {
                WHERE
                  ac_gp.activity_id = ac_sh.activity_id
                  AND ac_gp.contact_id = {$associate['id']}
-      	         AND ac_gp.record_type_id = 3
+      	         AND ac_gp.record_type_id IN(2,3)
            )
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
         $custom_field_value_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
       }
 
@@ -791,7 +805,8 @@ class CRM_Customreports_MonthlyReport {
            AND avc.campaigns_21 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $campaign['value'] . CRM_Core_DAO::VALUE_SEPARATOR . "%'
            AND z.topinfluencer_6 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $field_value . CRM_Core_DAO::VALUE_SEPARATOR . "%'
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
         $custom_field_value_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
       }
 
@@ -845,10 +860,11 @@ class CRM_Customreports_MonthlyReport {
                WHERE
                  ac_gp.activity_id = ac_sh.activity_id
                  AND ac_gp.contact_id IN (" . implode(',', array_keys($associates)) . ")
-      	         AND ac_gp.record_type_id = 3
+      	         AND ac_gp.record_type_id IN(2,3)
            )
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
       $custom_field_value_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
 
       // Contacts with engagement per custom field value per associate.
@@ -879,10 +895,11 @@ class CRM_Customreports_MonthlyReport {
                WHERE
                  ac_gp.activity_id = ac_sh.activity_id
                  AND ac_gp.contact_id = {$associate['id']}
-      	         AND ac_gp.record_type_id = 3
+      	         AND ac_gp.record_type_id IN(2,3)
            )
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
         $custom_field_value_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
       }
 
@@ -907,7 +924,8 @@ class CRM_Customreports_MonthlyReport {
            AND avc.campaigns_21 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $campaign['value'] . CRM_Core_DAO::VALUE_SEPARATOR . "%'
            AND z.engagement_5 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $field_value . CRM_Core_DAO::VALUE_SEPARATOR . "%'
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
         $custom_field_value_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
       }
 
@@ -946,10 +964,11 @@ class CRM_Customreports_MonthlyReport {
            WHERE
              ac_gp.activity_id = ac_sh.activity_id
              AND ac_gp.contact_id IN (" . implode(',', array_keys($associates)) . ")
-             AND ac_gp.record_type_id = 3
+             AND ac_gp.record_type_id IN(2,3)
          )
          AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-         AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+         AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
     $activities_total_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
 
     // Activities with stakeholders and GP associates involved per associate.
@@ -976,10 +995,11 @@ class CRM_Customreports_MonthlyReport {
              WHERE
                ac_gp.activity_id = ac_sh.activity_id
                AND ac_gp.contact_id = {$associate['id']}
-               AND ac_gp.record_type_id = 3
+               AND ac_gp.record_type_id IN(2,3)
            )
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
       $activities_total_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
     }
 
@@ -1010,11 +1030,12 @@ class CRM_Customreports_MonthlyReport {
              WHERE
                ac_gp.activity_id = ac_sh.activity_id
                AND ac_gp.contact_id IN (" . implode(',', array_keys($associates)) . ")
-               AND ac_gp.record_type_id = 3
+               AND ac_gp.record_type_id IN(2,3)
            )
            AND avc.campaigns_21 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $campaign['value'] . CRM_Core_DAO::VALUE_SEPARATOR . "%'
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
       $activities_total_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
     }
 
@@ -1059,10 +1080,11 @@ class CRM_Customreports_MonthlyReport {
            WHERE
              ac_gp.activity_id = ac_sh.activity_id
              AND ac_gp.contact_id IN (" . implode(',', array_keys($associates)) . ")
-             AND ac_gp.record_type_id = 3
+             AND ac_gp.record_type_id IN(2,3)
          )
          AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-         AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+         AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
       $activities_type_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
 
       // Activities with stakeholders and GP associates involved per associate.
@@ -1089,10 +1111,11 @@ class CRM_Customreports_MonthlyReport {
              WHERE
                ac_gp.activity_id = ac_sh.activity_id
                AND ac_gp.contact_id = {$associate['id']}
-               AND ac_gp.record_type_id = 3
+               AND ac_gp.record_type_id IN(2,3)
            )
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
         $activities_type_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
       }
 
@@ -1123,11 +1146,12 @@ class CRM_Customreports_MonthlyReport {
              WHERE
                ac_gp.activity_id = ac_sh.activity_id
                AND ac_gp.contact_id IN (" . implode(',', array_keys($associates)) . ")
-               AND ac_gp.record_type_id = 3
+               AND ac_gp.record_type_id IN(2,3)
            )
            AND avc.campaigns_21 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $campaign['value'] . CRM_Core_DAO::VALUE_SEPARATOR . "%'
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
-           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'";
+           AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
+           AND a.activity_type_id != 3";
         $activities_type_record[] = CRM_Core_DAO::executeQuery($query)->fetchValue();
       }
 
@@ -1171,6 +1195,7 @@ class CRM_Customreports_MonthlyReport {
       'sequential' => 1,
       'return' => array('label', 'value'),
       'option_group_id' => $option_group['option_group_id'],
+      'option.limit' => 0,
     ));
     return $campaigns['values'];
   }
