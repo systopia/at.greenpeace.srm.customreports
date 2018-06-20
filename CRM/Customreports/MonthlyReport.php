@@ -616,7 +616,10 @@ class CRM_Customreports_MonthlyReport {
              c_sh.employer_id != 1
              OR c_sh.employer_id IS NULL
            )
-           AND z.{$custom_field_name} IS NOT NULL
+           AND (
+             z.{$custom_field_name} IS NOT NULL
+             AND z.{$custom_field_name} != ''
+           )
            AND EXISTS(
                SELECT * FROM civicrm_activity_contact ac_gp
                WHERE
@@ -651,7 +654,10 @@ class CRM_Customreports_MonthlyReport {
              c_sh.employer_id != 1
              OR c_sh.employer_id IS NULL
            )
-           AND z.{$custom_field_name} IS NOT NULL
+           AND (
+             z.{$custom_field_name} IS NOT NULL
+             AND z.{$custom_field_name} != ''
+           )
            AND EXISTS(
                SELECT * FROM civicrm_activity_contact ac_gp
                WHERE
@@ -684,7 +690,10 @@ class CRM_Customreports_MonthlyReport {
          WHERE
            ac_sh.record_type_id = 3
            AND avc.campaigns_21 LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $campaign['value'] . CRM_Core_DAO::VALUE_SEPARATOR . "%'
-           AND z.{$custom_field_name} IS NOT NULL
+           AND (
+             z.{$custom_field_name} IS NOT NULL
+             AND z.{$custom_field_name} != ''
+           )
            AND a.activity_date_time >= '" . date('Y-m-d H:i:s', $this->startDate->getTimestamp()) . "'
            AND a.activity_date_time < '" . date('Y-m-d H:i:s', $this->endDate->getTimestamp()) . "'
            AND a.activity_type_id != 3";
